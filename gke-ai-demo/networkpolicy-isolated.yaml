@@ -15,4 +15,17 @@ spec:
     - ipBlock:
         cidr: 35.191.0.0/16 # Load balancer health check probe source IP range 
   egress:
-  - {}
+  # Allow egress to other pods in the same namespace.
+  - to:
+    - podSelector: {}
+  # Allow egress for DNS resolution.
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53

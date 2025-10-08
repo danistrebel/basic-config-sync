@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gradio-to-vllm
+  namespace: app-chat
+spec:
+  podSelector:
+    matchLabels:
+      app: gradio
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: shared-models
+      podSelector:
+        matchLabels:
+          component: inference-server
